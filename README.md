@@ -21,5 +21,6 @@ python lmpso/tsp.py --num_of_cities <number_of_cities e.g. 5, 10, 20, 30> --seed
 
 ```bash
 cd scripts
-python lmpso/heuristic_improvement_tsp.py --num_of_cities <number_of_cities e.g. 5, 10, 20, 30> --seed <seed for city positions>
+python lmpso/heuristic_improvement_tsp.py
 ```
+

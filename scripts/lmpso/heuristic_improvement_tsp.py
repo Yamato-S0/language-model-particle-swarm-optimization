@@ -19,7 +19,7 @@ from utils.setup import (
 
 from problems.heuristic_improvement_tsp import (
     TOUR_CONSTRUCTION_HEURISTICS,
-    TravelingSalesmanHeuristic,
+    HeuristicImprovementTSP,
 )
 
 if __name__ == "__main__":
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     NUM_PARTICLES = 25
     MAX_ITER = 40
 
-    PROBLEM_TYPE = "tsp_heuristic"
+    PROBLEM_TYPE = "heuristic_improvement_tsp"
     BOUNDS = (0, 100)
     DATASETS = {
         "0": generate_tsp_problem(100, BOUNDS, 0),
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         "4": generate_tsp_problem(100, BOUNDS, 4),
     }
 
-    unique_id = "20241129_233000"
+    unique_id = create_unique_id()
     results_path, logs_path = setup_directories(
         PROBLEM_TYPE, "lmpso", unique_id, "num_cities_100", prefix=None
     )
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     inertia_length = 1
     llm = LLAMA3_1_8B_Instruct()
     logger = setup_logger(os.path.join(logs_path, f"seed_{seed}.log"))
-    problem = TravelingSalesmanHeuristic(datasets=DATASETS, logger=logger)
+    problem = HeuristicImprovementTSP(datasets=DATASETS, logger=logger)
     config = {
         "num_particles": NUM_PARTICLES,
         "max_iter": MAX_ITER,
