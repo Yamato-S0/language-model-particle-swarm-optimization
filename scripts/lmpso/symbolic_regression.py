@@ -4,8 +4,8 @@ import json
 import random
 import pickle
 import numpy as np
-from pmlb import fetch_data
 import sympy as sp
+from pmlb import fetch_data, regression_dataset_names
 from sklearn.metrics import r2_score
 
 sys.path.append("../src")
@@ -39,10 +39,55 @@ if __name__ == "__main__":
     MAX_ITER = 50
 
     PROBLEM_TYPE = "symbolic_regression"
+    # 保存先のパスを指定
+    dataset_dict_path = "../data/pmlb/dataset_dict.pkl"
 
-    # dataset dictをファイルから読み込む
-    with open("../data/pmlb/dataset_dict.pkl", "rb") as f:
-        dataset_dict = pickle.load(f)
+    # dataset_dict.pkl が存在するか確認
+    if not os.path.exists(dataset_dict_path):
+        print(
+            f"{dataset_dict_path} does not exist. Fetching and creating the dataset dictionary..."
+        )
+
+        # データセット辞書を作成
+        dataset_dict = {}
+        for regression_dataset_name in regression_dataset_names:
+            try:
+                print("Fetching dataset:", regression_dataset_name)
+                # データをフェッチ
+                X, y = fetch_data(
+                    regression_dataset_name,
+                    return_X_y=True,
+                    local_cache_dir="../data/pmlb",
+                )
+                print(
+                    f"{regression_dataset_name} has {X.shape[0]} samples and {X.shape[1]} features"
+                )
+                # 特徴量の数をキーにしてデータセット名を追加
+                if dataset_dict.get(X.shape[1]) is None:
+                    dataset_dict[X.shape[1]] = []
+                dataset_dict[X.shape[1]].append(regression_dataset_name)
+            except ValueError as e:
+                print(f"Skipping dataset {regression_dataset_name} due to error: {e}")
+        # 特徴量の数でソート
+        dataset_dict = {
+            k: v for k, v in sorted(dataset_dict.items(), key=lambda item: item[0])
+        }
+        print(dataset_dict)
+
+        # 保存先ディレクトリを作成
+        os.makedirs(os.path.dirname(dataset_dict_path), exist_ok=True)
+
+        # データセット辞書を保存
+        with open(dataset_dict_path, "wb") as f:
+            pickle.dump(dataset_dict, f)
+
+        print(f"Saved the dataset dictionary to {dataset_dict_path}.")
+    else:
+        # dataset_dict.pkl が存在する場合は読み込む
+        print(f"{dataset_dict_path} exists. Loading the data...")
+        with open(dataset_dict_path, "rb") as f:
+            dataset_dict = pickle.load(f)
+        print("Loaded the dataset dictionary.")
 
     # インデックスの範囲を確認
     if dataset_index < 0 or dataset_index >= len(dataset_dict[num_features]):
