@@ -1,5 +1,8 @@
 # Language Model Particle Swarm Optimization
 
+This repository contains the implementation of the Language Model Particle Swarm Optimization (LMPSO) algorithm, which is a novel approach to explictly integrate large language models (LLMs) into the Particle Swarm Optimization (PSO) framework.
+The paper describing this work is available at [arXiv:2504.09247](https://arxiv.org/abs/2504.09247).
+
 ## How to Use
 
 ### Install the required packages
